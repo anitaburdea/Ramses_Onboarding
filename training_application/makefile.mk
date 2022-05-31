@@ -3,6 +3,7 @@
 # make clean  # remove ALL binaries and objects
 
 CC = gcc                        # compiler to use
+PACKAGES := glib-2.0
 
 LINKERFLAG = -lm
 
@@ -14,11 +15,9 @@ SRCS := $(shell find $(SRC_DIRS) -name '*.c')
 
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
-#INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INCLUDES += -I./include `pkg-config --cflags $(PACKAGES)`
 
-#INC_FLAGS := $(addprefix -I,$(INC_DIRS))
-
-CPPFLAGS := $(INC_FLAGS) -MMD -MP
+CFLAGS := $(INC_FLAGS) -MMD -MP
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
@@ -26,7 +25,7 @@ $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 # Build step for C source
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 
 .PHONY: clean
