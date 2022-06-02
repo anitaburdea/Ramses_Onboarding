@@ -17,17 +17,15 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 INCLUDES += -I./include `pkg-config --cflags $(PACKAGES)`
 
-CFLAGS = -g -Wall -Wpedantic -Wno-padded -O $(shell pkg-config --cflags glib-2.0)
-
-LFLAGS = $(shell pkg-config --libs glib-2.0)
+LDFLAGS += `pkg-config --libs $(PACKAGES)` -lpthread
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(CFLAGS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
 # Build step for C source
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(LFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(INCLUDES) -c $< -o $@
 
 
 .PHONY: clean
