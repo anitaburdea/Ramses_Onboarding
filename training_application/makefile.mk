@@ -3,7 +3,7 @@
 # make clean  # remove ALL binaries and objects
 
 CC = gcc                        # compiler to use
-PACKAGES := glib-2.0
+PACKAGES := glib-2.0 gio-unix-2.0
 
 LINKERFLAG = -lm
 
@@ -17,7 +17,7 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 INCLUDES += -I./include `pkg-config --cflags $(PACKAGES)`
 
-LDFLAGS += `pkg-config --libs $(PACKAGES)` -lpthread
+LDFLAGS += `pkg-config --libs $(PACKAGES)` 
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
@@ -27,6 +27,8 @@ $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(INCLUDES) -c $< -o $@
 
+all:
+	${BUILD_DIR}
 
 .PHONY: clean
 clean:
