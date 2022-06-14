@@ -15,6 +15,7 @@ SRCS := $(shell find $(SRC_DIRS) -name '*.c')
 
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
+INCLUDES += -I./include
 INCLUDES += -I./include `pkg-config --cflags $(PACKAGES)`
 
 LDFLAGS += `pkg-config --libs $(PACKAGES)` 

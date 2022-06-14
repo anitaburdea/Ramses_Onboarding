@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE busconfig PUBLIC
+ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<node name="/">
+  <interface name="org.gtk.GDBus.TestInterface">
+    <method name="setTime">
+       <arg type='i' name='hourTime' direction='in'/>"
+       <arg type='i' name='minTime' direction='in'/>"
+    </method>
+    <method name="setAlarmTime">
+       <arg type='i' name='hourAlarmTime' direction='in'/>"
+       <arg type='i' name='minAlarmTime' direction='in'/>"
+    </method>
+    <method name="getAlarmStatus">
+        <arg type='s' name='alarmStatus' direction='out'/>"
+    </method> 
+    <method name="setAlarmStatus">
+       <arg type='s' name='alarmStatus' direction='in'/>"
+    </method>
+    <signal name="ringAlarm">
+       <arg name="messages" type="as"/>
+    </signal>
+  </interface>
+</node>

@@ -8,6 +8,8 @@
 #include <gio/gio.h>
 #include <sys/wait.h>
 
+#include "dbus_server.h"
+
 int cnt = 0;
 
 GMutex lock;
@@ -180,41 +182,7 @@ static int _funcServer(void)
 
 int main(void)
 {
-    pid_t child_pid;
-
-    g_mutex_init(&lock);
-
-    // Create two threads
-    GThread *firstThread = g_thread_new("First thread", &_funcIncrement, NULL);
-    GThread *secThread = g_thread_new("Second thread", &_funcIncrement, NULL);
-
-    g_thread_join(firstThread);
-    g_thread_join(secThread);
-
-    g_mutex_clear(&lock);
-
-    // Create child process
-    child_pid = fork();
-
-    if (child_pid < 0)
-    {
-        printf("Fork failed");
-        return 1;
-    }
-    else if (child_pid == 0)
-    {
-        printf("Child process successfully created!\n");
-        printf("Server Process Initialize the communication\n");
-
-        _funcServer();
-    }
-    else
-    {
-        printf("Parent process successfully created!\n");
-        printf("Client Process\n");
-
-        _funcClient();
-    }
+    DBUS_Server();
 
     return 0;
 }
