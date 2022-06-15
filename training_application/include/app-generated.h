@@ -54,7 +54,7 @@ struct _trainingapplicationIface
 
   void (*ring_alarm) (
     trainingapplication *object,
-    const gchar *const *arg_messages);
+    const gchar *arg_messages);
 
 };
 
@@ -87,7 +87,7 @@ void training_application__complete_set_alarm_status (
 /* D-Bus signal emissions functions: */
 void training_application__emit_ring_alarm (
     trainingapplication *object,
-    const gchar *const *arg_messages);
+    const gchar *arg_messages);
 
 
 

@@ -324,7 +324,7 @@ static const _ExtendedGDBusArgInfo _training_application__signal_info_ring_alarm
   {
     -1,
     (gchar *) "messages",
-    (gchar *) "as",
+    (gchar *) "s",
     NULL
   },
   FALSE
@@ -534,7 +534,7 @@ training_application__default_init (trainingapplicationIface *iface)
     NULL,
     g_cclosure_marshal_generic,
     G_TYPE_NONE,
-    1, G_TYPE_STRV);
+    1, G_TYPE_STRING);
 
 }
 
@@ -548,7 +548,7 @@ training_application__default_init (trainingapplicationIface *iface)
 void
 training_application__emit_ring_alarm (
     trainingapplication *object,
-    const gchar *const *arg_messages)
+    const gchar *arg_messages)
 {
   g_signal_emit_by_name (object, "ring-alarm", arg_messages);
 }
@@ -1590,7 +1590,7 @@ training_application__skeleton_dbus_interface_flush (GDBusInterfaceSkeleton *_sk
 static void
 _training_application__on_signal_ring_alarm (
     trainingapplication *object,
-    const gchar *const *arg_messages)
+    const gchar *arg_messages)
 {
   trainingapplicationSkeleton *skeleton = TRAINING_APPLICATION__SKELETON (object);
 
@@ -1598,7 +1598,7 @@ _training_application__on_signal_ring_alarm (
   GVariant   *signal_variant;
   connections = g_dbus_interface_skeleton_get_connections (G_DBUS_INTERFACE_SKELETON (skeleton));
 
-  signal_variant = g_variant_ref_sink (g_variant_new ("(^as)",
+  signal_variant = g_variant_ref_sink (g_variant_new ("(s)",
                    arg_messages));
   for (l = connections; l != NULL; l = l->next)
     {
