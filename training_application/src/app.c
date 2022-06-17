@@ -9,11 +9,14 @@
 #include <sys/wait.h>
 
 #include "dbus_server.h"
+#include "dbus_client.h"
 
 int cnt = 0;
 
 GMutex lock;
 GMainLoop *loop;
+static const char *const SERVER_BUS_NAME = "org.gtk.GDBus";
+static const char *const DBUS_PATH_OBJ = "/org/gtk/GDBus/TestInterface";
 
 /**
  * @brief Function used for threads, that increments the global variable cnt
@@ -180,9 +183,68 @@ static int _funcServer(void)
     return 0;
 }
 
+void dbusClientSignalCb(void)
+{
+    printf("Alarm is ringing!\n");
+}
+
 int main(void)
 {
-    DBUS_Server();
+    pid_t child_pid;
+
+    // Create child process
+    child_pid = fork();
+
+    if (child_pid < 0)
+    {
+        printf("Fork failed");
+        return 1;
+    }
+    else if (child_pid == 0)
+    {
+        printf("Child process successfully created!\n");
+        printf("Server Process Initialize the communication\n");
+
+        DBUS_Server();
+    }
+    else
+    {
+        printf("Parent process successfully created!\n");
+        printf("Client Process\n");
+
+        DBUS_Client_Init(SERVER_BUS_NAME, DBUS_PATH_OBJ);
+
+        // Call the methods to set the parameters
+        int hour = 0, minutes = 0;
+
+        printf("Enter the actual hour:");
+        scanf("%d", &hour);
+
+        printf("Enter the actual minutes:");
+        scanf("%d", &minutes);
+        DBUS_Client_SetTime(hour, minutes);
+
+        // Reinitialize the parameters
+        hour = 0;
+        minutes = 0;
+
+        printf("Enter the alarm hour:");
+        scanf("%d", &hour);
+
+        printf("Enter the alarm minutes:");
+        scanf("%d", &minutes);
+        DBUS_Client_SetAlarmTime(hour, minutes);
+
+        char alarmStatus[50];
+        printf("Enter the alarm status:");
+        scanf("%s", alarmStatus);
+
+        DBUS_Client_SetAlarmStatus(alarmStatus);
+
+        DBUS_Client_SetCBRegister(&dbusClientSignalCb);
+
+        DBUS_Client_SignalConnect();
+    }
 
     return 0;
 }

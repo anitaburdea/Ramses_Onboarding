@@ -10,7 +10,7 @@
 #  include "config.h"
 #endif
 
-#include "app-generated.h"
+#include "../include/app-generated.h"
 
 #include <string.h>
 #ifdef G_OS_UNIX
