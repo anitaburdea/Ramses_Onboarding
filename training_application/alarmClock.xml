@@ -19,7 +19,7 @@
        <arg type='s' name='alarmStatus' direction='in'/>"
     </method>
     <signal name="ringAlarm">
-       <arg name="messages" type="as"/>
+       <arg name="messages" type="s"/>
     </signal>
   </interface>
 </node>
