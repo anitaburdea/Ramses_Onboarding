@@ -23,3 +23,17 @@ in order to set the permissions for the created DBus System. The content of the 
      </policy>
    </busconfig>
 
+
+DBUS Proxy Client library(.so) generation for Server - Client communication:
+
+Run make for the makefile from /lib directory and after generating the lib_dbus_client.so library in /bin directory, follow this steps:
+  1. Copy lib_dbus_client.so library in /usr/lib path 
+  2. Chmod 755 /usr/lib/lib_dbus_client.so
+  3. Now the file is in a standard location, with correct permissions, readable by everybody. 
+  We need to tell the loader it is available for use, so let us update the cache with this command: 
+       ldconfig
+  4.That should create a link to our shared library and update the cache so it is available for immediate use. Let us double check:
+       ldconfig -p | grep lib_dbus_client
+       lib_dbus_client.so (libc6) => /usr/lib/lib_dbus_client.so
+
+       
