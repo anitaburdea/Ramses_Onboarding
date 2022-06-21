@@ -205,6 +205,8 @@ int main(void)
         printf("Child process successfully created!\n");
         printf("Server Process Initialize the communication\n");
 
+        GThread *thread = g_thread_new("Methods processing thread", &DBUS_Server_MethodsProc, NULL);
+
         DBUS_Server();
     }
     else
@@ -214,32 +216,14 @@ int main(void)
 
         DBUS_Client_Init(SERVER_BUS_NAME, DBUS_PATH_OBJ);
 
-        // Call the methods to set the parameters
-        int hour = 0, minutes = 0;
+        g_usleep(1000000);
+        DBUS_Client_SetTime(10, 10);
 
-        printf("Enter the actual hour:");
-        scanf("%d", &hour);
+        g_usleep(1000000);
+        DBUS_Client_SetAlarmTime(10, 10);
 
-        printf("Enter the actual minutes:");
-        scanf("%d", &minutes);
-        DBUS_Client_SetTime(hour, minutes);
-
-        // Reinitialize the parameters
-        hour = 0;
-        minutes = 0;
-
-        printf("Enter the alarm hour:");
-        scanf("%d", &hour);
-
-        printf("Enter the alarm minutes:");
-        scanf("%d", &minutes);
-        DBUS_Client_SetAlarmTime(hour, minutes);
-
-        char alarmStatus[50];
-        printf("Enter the alarm status:");
-        scanf("%s", alarmStatus);
-
-        DBUS_Client_SetAlarmStatus(alarmStatus);
+        g_usleep(1000000);
+        DBUS_Client_SetAlarmStatus("active");
 
         DBUS_Client_SetCBRegister(&dbusClientSignalCb);
 

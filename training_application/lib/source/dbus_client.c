@@ -31,28 +31,75 @@ static void _on_handle_ring_alarm(void)
     g_main_loop_quit(loop);
 }
 
+static void _clientSetTimeCB(GObject *source_object, GAsyncResult *res, gpointer user_data)
+{
+    (void) *source_object;
+
+    guint status;
+    GError *err = NULL;
+
+    printf("Client set time callback\n");
+
+    // Get response
+    if (training_application__call_set_time_finish(proxy, res, &err))
+    {
+        printf("Set time finished successfully!\n");
+    }
+
+}
+
+static void _clientSetAlarmTimeCB(GObject *source_object, GAsyncResult *res, gpointer user_data)
+{
+    (void) *source_object;
+
+    guint status;
+    GError *err = NULL;
+
+    printf("Client set alarm time callback\n");
+
+    // Get response
+    if (training_application__call_set_alarm_time_finish(proxy, res, &err))
+    {
+        printf("Set alarm time finished successfully!\n");
+    }
+
+}
+
+static void _clientSetAlarmStatusCB(GObject *source_object, GAsyncResult *res, gpointer user_data)
+{
+    (void) *source_object;
+
+    guint status;
+    GError *err = NULL;
+
+    printf("Client set alarm status callback\n");
+
+    // Get response
+    if (training_application__call_set_alarm_status_finish(proxy, res, &err))
+    {
+        printf("Set alarm status finished successfully!\n");
+    }
+}
+
 void DBUS_Client_SetTime(int hour, int minutes)
 {
-    GError *err = NULL;
     printf("Method set time\n");
 
-    training_application__call_set_time_sync(proxy, hour, minutes, NULL, &err);
+    training_application__call_set_time(proxy, hour, minutes, NULL, &_clientSetTimeCB, NULL);
 }
 
 void DBUS_Client_SetAlarmTime(int alarmHour, int alarmMinutes)
 {
-    GError *err = NULL;
     printf("Method set alarm time\n");
 
-    training_application__call_set_alarm_time_sync(proxy, alarmHour, alarmMinutes, NULL, &err);
+    training_application__call_set_alarm_time(proxy, alarmHour, alarmMinutes, NULL, &_clientSetAlarmTimeCB, NULL);
 }
 
 void DBUS_Client_SetAlarmStatus(const char *alarmStatus)
 {
-    GError *err = NULL;
     printf("Method set alarm status\n");
 
-    training_application__call_set_alarm_status_sync(proxy, alarmStatus, NULL, &err);
+    training_application__call_set_alarm_status(proxy, alarmStatus, NULL, &_clientSetAlarmStatusCB, NULL);
 }
 
 void DBUS_Client_GetAlarmStatus(char *alarmStatus)
