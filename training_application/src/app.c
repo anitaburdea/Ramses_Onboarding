@@ -216,13 +216,11 @@ int main(void)
 
         DBUS_Client_Init(SERVER_BUS_NAME, DBUS_PATH_OBJ);
 
+        // Wait for acquiring the interface
         g_usleep(1000000);
+
         DBUS_Client_SetTime(10, 10);
-
-        g_usleep(1000000);
         DBUS_Client_SetAlarmTime(10, 10);
-
-        g_usleep(1000000);
         DBUS_Client_SetAlarmStatus("active");
 
         DBUS_Client_SetCBRegister(&dbusClientSignalCb);

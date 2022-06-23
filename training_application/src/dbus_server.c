@@ -40,9 +40,10 @@ typedef struct
 
 static sAlarmClock alarmClock;
 static trainingapplication *_interface;
-static GQueue *queue;
+static sGAsyncQueue *queue;
 static GMutex *_mutex;
 static GMainLoop *loop;
+static gboolean threadRun = TRUE;
 const char *const trainingApp = "org.gtk.GDBus.TestInterface";
 const char *const SERVER_BUS_NAME = "org.gtk.GDBus";
 const char *const DBUS_PATH_OBJ = "/org/gtk/GDBus/TestInterface";
@@ -78,11 +79,13 @@ static int _on_handle_ring_alarm(void *arg)
         training_application__emit_ring_alarm(_interface, "Ring-ring!!");
 
         G_ASYNC_QUEUE_Destroy(queue);
-
         printf("Async queue is destroyed\n");
 
         printf("Quit the Server main loop\n");
         g_main_loop_quit(loop);
+
+        // Stop the thread infinite loop
+        threadRun = FALSE;
 
         return FALSE;
     }
@@ -212,17 +215,11 @@ int DBUS_Server(void)
 void* DBUS_Server_MethodsProc(gpointer data)
 {
     sElement *msg;
-    int i = 0;
 
     printf("Thread created for methods processing\n");
 
-    // Initialize the used queue
-    queue = G_ASYNC_QUEUE_Init();
-
-    while (i < 3)
+    while (threadRun)
     {
-        g_usleep(3000000);
-
         msg = G_ASYNC_QUEUE_POP(queue);
 
         if (msg != NULL)
@@ -252,6 +249,5 @@ void* DBUS_Server_MethodsProc(gpointer data)
 
             g_free(msg);
         }
-        i++;
     }
 }
